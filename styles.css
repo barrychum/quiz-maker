@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.quiz-container, .summary, #quiz-selection, #quiz-results {
+    display: none;
+}
+
+.answer {
+    font-weight: bold;
+    color: #38803a; /* Green color for correct answer */
+}
+
+.wrongans {
+    font-weight: bold;
+    color: #a13535; /* Green color for correct answer */
+}
+
+.explanation {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+#results-table-container {
+    display: none;
+}
+
+/* Generic styles for all div elements */
+div {
+    margin: 10px 0;
+}
+
+#quiz-question {
+    /* Apply the cloned rule with modified color */
+    color: rgb(0, 0, 0);
+    font-size: 1.2em;  
+}
+  
+h2::clone-rule(#quiz-question) {
+    /* Inherit all properties from h2 rule */
+}
+
+#select-number-of-question {
+    font-size: 1.2em;
+}
+h2::clone-rule(#select-number-of-question) {
+}
+
+#select-question-type {
+    font-size: 1em;
+}
+h2::clone-rule(#select-question-type) {
+}
+
+#quiz-type-form label:not(:first-child) {
+    margin-left: 1em; /* Adjust indentation as needed */
+}
+  
