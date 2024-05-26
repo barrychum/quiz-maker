@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" no-cache>
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="quiz-selection">
+        <h2 id="select-number-of-question">Select Number of Questions</h2>
+        <input type="number" id="num-quizzes" min="1" value="1">
+        <button onclick="startQuiz()">Start</button>
+        <h2 id="select-question-type">Select Question Types</h2>
+        <form id="quiz-type-form"></form>
+    </div>
+    <div id="quiz-container" class="quiz-container" style="display: none;">
+        <div id="quiz-info">
+            <p id="quiz-progress" style="display: inline-block;"></p>
+            <p id="quiz-type" style="display: inline-block;"></p>
+        </div>
+        <h2 id="quiz-question"></h2>
+        <form id="quiz-form">
+            <div id="quiz-choices"></div>
+            <br>
+            <button type="button" id="submit-button" onclick="submitQuiz()">Submit</button>
+        </form>
+        <div id="next-page-button">
+            <button id="next-button" onclick="nextQuiz()" style="display: none;">Next</button>
+        </div>
+        <br>
+        <label>
+            <input type="checkbox" id="mark-review">
+            Mark for review
+        </label>
+        <br><br>
+        <div id="quiz-feedback"></div>
+        <div id="quiz-explanation"></div>
+    </div>
+    <div id="summary" class="summary" style="display: none;">
+        <h2>Quiz Summary</h2>
+        <p id="summary-text"></p>
+        <button onclick="restartEverything()">Select <b>Other</b> Questions</button>
+        <button onclick="restartSameSet()">Retry <b>Same</b> Questions</button>
+        <button id="retry-incorrect" onclick="retryIncorrect()" style="display: none;">Retry <b>Incorrect</b></button>
+        <button id="retry-review" onclick="retryReview()" style="display: none;">Retry <b>Review</b></button>
+    </div>
+    <div id="quiz-results" style="display: none;">
+        <h2>Quiz Results</h2>
+        <button onclick="toggleResults()">Show/Hide Results</button>
+        <button onclick="downloadResults()">Download Results</button>
+        <div id="results-table-container" style="display: none;">
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Type</th>
+                        <th>Your Answer</th>
+                        <th>Correct Answer</th>
+                        <th>Correctness</th>
+                        <th>Review</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        let selectedQuizzes = [];
+        let currentQuizIndex = 0;
+        let correctCount = 0;
+        let quizResults = [];
+        let incorrectQuizzes = [];
+        let reviewQuizzes = [];
+
+        function shuffleArray(array) {
+            let newArray = array.slice();
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            const numQuizzes = parseInt(document.getElementById('num-quizzes').value);
+            const selectedTypes = Array.from(document.querySelectorAll('input[name="quiz-type"]:checked')).map(input => input.value);
+            let filteredQuizzes = quizzes;
+
+            if (!selectedTypes.includes("All")) {
+                filteredQuizzes = quizzes.filter(quiz => selectedTypes.includes(quiz.type));
+            }
+
+            selectedQuizzes = shuffleArray(filteredQuizzes).slice(0, numQuizzes);
+            document.getElementById('quiz-selection').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuiz();
+        }
+
+        function shuffleChoices(choices) {
+            return shuffleArray(choices);
+        }
+
+        function loadQuiz() {
+            const quiz = selectedQuizzes[currentQuizIndex];
+            document.getElementById('quiz-question').innerText = quiz.question;
+            document.getElementById('quiz-type').innerText = ` : ${quiz.type}`;
+            document.getElementById('quiz-progress').innerText = `Quiz ${currentQuizIndex + 1} of ${selectedQuizzes.length}`;
+            const choicesContainer = document.getElementById('quiz-choices');
+            choicesContainer.innerHTML = '';
+            const shuffledChoices = shuffleChoices(quiz.choices.map((choice, index) => ({ choice, index })));
+            shuffledChoices.forEach((item, i) => {
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" name="choices" value="${item.index}"> ${item.choice}`;
+                choicesContainer.appendChild(label);
+                choicesContainer.appendChild(document.createElement('br'));
+            });
+        }
+
+        function submitQuiz() {
+            document.getElementById('submit-button').style.display = 'none'; // Hide the submit button after user clicks it
+            const quiz = selectedQuizzes[currentQuizIndex];
+            const selectedChoices = Array.from(document.querySelectorAll('input[name="choices"]:checked')).map(input => parseInt(input.value));
+            const isCorrect = selectedChoices.length === quiz.correct.length && selectedChoices.every(value => quiz.correct.includes(value));
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.innerHTML = isCorrect ? '<span class="answer">Correct!</span>' : '<span class="wrongans">Wrong!</span> Correct answers: ' + quiz.correct.map(index => quiz.choices[index]).join(', ');
+            const explanation = document.getElementById('quiz-explanation');
+            explanation.innerHTML = '<div class="explanation">' + quiz.explanation + '</div>';
+            correctCount += isCorrect ? 1 : 0;
+            document.getElementById('next-button').style.display = 'inline-block';
+        }
+
+        function nextQuiz() {
+            const quizFeedback = document.getElementById('quiz-feedback').innerHTML;
+            if (quizFeedback.trim() === '') {
+                // If no feedback is given (user hasn't submitted answer), return without proceeding
+                return;
+            }
+            
+            // Record the quiz result
+            const quiz = selectedQuizzes[currentQuizIndex];
+            const selectedChoices = Array.from(document.querySelectorAll('input[name="choices"]:checked')).map(input => parseInt(input.value));
+            const userAnswer = selectedChoices.map(index => quiz.choices[index]).join(', ');
+            const correctAnswer = quiz.correct.map(index => quiz.choices[index]).join(', ');
+            const isCorrect = selectedChoices.length === quiz.correct.length && selectedChoices.every(value => quiz.correct.includes(value));
+            const markedForReview = document.getElementById('mark-review').checked;
+            quizResults.push({
+                question: quiz.question,
+                type: quiz.type,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect ? 'Yes' : 'No',
+                review: markedForReview ? 'Yes' : 'No'
+            });
+
+            if (!isCorrect) {
+                incorrectQuizzes.push(quiz);
+            }
+
+            if (markedForReview) {
+                reviewQuizzes.push(quiz);
+            }
+
+            // Reset the mark for review checkbox
+            document.getElementById('mark-review').checked = false;
+
+            currentQuizIndex++;
+            if (currentQuizIndex < selectedQuizzes.length) {
+                document.getElementById('quiz-feedback').innerHTML = '';
+                document.getElementById('quiz-explanation').innerHTML = '';
+                document.getElementById('next-button').style.display = 'none';
+                document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
+                loadQuiz();
+            } else {
+                showSummary();
+                showResults();
+            }
+        }
+
+        function showSummary() {
+            const percentageCorrect = (correctCount / selectedQuizzes.length) * 100;
+            const summaryText = `You got ${correctCount} out of ${selectedQuizzes.length} correct (${percentageCorrect.toFixed(2)}%). `;
+            let summaryMessage = '';
+            if (percentageCorrect >= 100) {
+                summaryMessage = 'Congratulations! You got a perfect score.';
+            } else {
+                summaryMessage = 'I see some areas for improvement, but you\'re on the right track!';
+            }
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('summary').style.display = 'block';
+            document.getElementById('summary-text').innerHTML = summaryText + summaryMessage;
+
+            if (incorrectQuizzes.length > 0) {
+                document.getElementById('retry-incorrect').style.display = 'inline-block';
+            } else {
+                document.getElementById('retry-incorrect').style.display = 'none';
+            }
+
+            if (reviewQuizzes.length > 0) {
+                document.getElementById('retry-review').style.display = 'inline-block';
+            } else {
+                document.getElementById('retry-review').style.display = 'none';
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-results').style.display = 'block'; // Show quiz results section
+            const resultsBody = document.getElementById('results-body');
+            resultsBody.innerHTML = ''; // Clear previous results
+            quizResults.forEach(result => {
+                const row = document.createElement('tr');
+                Object.values(result).forEach(value => {
+                    const cell = document.createElement('td');
+                    cell.innerText = value;
+                    row.appendChild(cell);
+                });
+                resultsBody.appendChild(row);
+            });
+        }
+
+        function toggleResults() {
+            const resultsTable = document.getElementById('results-table-container');
+            if (resultsTable.style.display === 'none' || resultsTable.style.display === '') {
+                resultsTable.style.display = 'block';
+            } else {
+                resultsTable.style.display = 'none';
+            }
+        }
+
+        function downloadResults() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Question,Type,Your Answer,Correct Answer,Correctness,Review\n";
+            quizResults.forEach(result => {
+                let row = Object.values(result).map(value => `"${value}"`).join(",");
+                csvContent += row + "\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "quiz_results.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function restartSameSet() {
+            currentQuizIndex = 0;
+            correctCount = 0;
+            quizResults = [];
+            incorrectQuizzes = [];
+            reviewQuizzes = [];
+            document.getElementById('quiz-feedback').innerHTML = ''; // Clear feedback
+            document.getElementById('quiz-explanation').innerHTML = ''; // Clear explanation
+            document.getElementById('next-button').style.display = 'none'; // Hide the Next button
+            document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuiz();
+        }
+
+        function retryIncorrect() {
+            selectedQuizzes = incorrectQuizzes;
+            currentQuizIndex = 0;
+            correctCount = 0;
+            quizResults = [];
+            incorrectQuizzes = [];
+            reviewQuizzes = [];
+            document.getElementById('quiz-feedback').innerHTML = ''; // Clear feedback
+            document.getElementById('quiz-explanation').innerHTML = ''; // Clear explanation
+            document.getElementById('next-button').style.display = 'none'; // Hide the Next button
+            document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuiz();
+        }
+
+        function retryReview() {
+            selectedQuizzes = reviewQuizzes;
+            currentQuizIndex = 0;
+            correctCount = 0;
+            quizResults = [];
+            incorrectQuizzes = [];
+            reviewQuizzes = [];
+            document.getElementById('quiz-feedback').innerHTML = ''; // Clear feedback
+            document.getElementById('quiz-explanation').innerHTML = ''; // Clear explanation
+            document.getElementById('next-button').style.display = 'none'; // Hide the Next button
+            document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuiz();
+        }
+
+        function restartEverything() {
+            currentQuizIndex = 0;
+            correctCount = 0;
+            selectedQuizzes = [];
+            quizResults = [];
+            incorrectQuizzes = [];
+            reviewQuizzes = [];
+            document.getElementById('quiz-feedback').innerHTML = ''; // Clear feedback
+            document.getElementById('quiz-explanation').innerHTML = ''; // Clear explanation
+            document.getElementById('next-button').style.display = 'none'; // Hide the Next button
+            document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'none'; // Hide quiz container
+            document.getElementById('quiz-selection').style.display = 'block'; // Show quiz selection
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('quiz-selection').style.display = 'block';
+            // Prevent caching by appending a random query string to the script src
+            const script = document.createElement('script');
+            script.src = `quizzes.js?nocache=${new Date().getTime()}`;
+            document.body.appendChild(script);
+        });
+
+        // Function to dynamically populate quiz types and set max quizzes
+        function populateQuizTypes() {
+            const quizTypeForm = document.getElementById('quiz-type-form');
+            const allTypesLabel = document.createElement('label');
+            allTypesLabel.innerHTML = `<input type="checkbox" name="quiz-type" value="All" checked> <b>All</b> (use this to select or unselect all)`;
+            quizTypeForm.appendChild(allTypesLabel);
+            quizTypeForm.appendChild(document.createElement('br'));
+
+            const uniqueTypes = [...new Set(quizzes.map(quiz => quiz.type))].sort();
+            uniqueTypes.forEach(type => {
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" name="quiz-type" value="${type}" checked> ${type}`;
+                quizTypeForm.appendChild(label);
+                quizTypeForm.appendChild(document.createElement('br'));
+            });
+
+            // Set the max value for the number of quizzes
+            document.getElementById('num-quizzes').max = quizzes.length;
+
+            // Add event listener for the all types checkbox
+            allTypesLabel.querySelector('input').addEventListener('change', function () {
+                const isChecked = this.checked;
+                document.querySelectorAll('input[name="quiz-type"]').forEach(input => {
+                    if (input !== this) {
+                        input.checked = isChecked;
+                    }
+                });
+            });
+
+            // Add event listener for other checkboxes
+            document.querySelectorAll('input[name="quiz-type"]').forEach(input => {
+                if (input.value !== 'All') {
+                    input.addEventListener('change', function () {
+                        if (!this.checked) {
+                            allTypesLabel.querySelector('input').checked = false;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Ensure quizzes.js is loaded before populating quiz types and setting max quizzes
+        document.addEventListener('DOMContentLoaded', () => {
+            const script = document.createElement('script');
+            script.src = 'quizzes.js';
+            script.onload = populateQuizTypes; // Populate quiz types once the script is loaded
+            document.body.appendChild(script);
+        });
+    </script>
+</body>
+</html>
