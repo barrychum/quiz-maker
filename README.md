@@ -48,7 +48,7 @@ This project provides a convenient and efficient way to create short quizzes by 
     Mention preferred methods for submitting improvements (e.g., pull requests) and any coding guidelines or testing procedures.
 
 ## License:
-Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE.md)
+Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE)
 
 ## Author:
 This program is created by me, Barry, for the need to prepare some examinations.  You can find me on Linkedin.
