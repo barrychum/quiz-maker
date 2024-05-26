@@ -25,7 +25,7 @@ This project provides a convenient and efficient way to create short quizzes by 
 
 ## Usage:
 
-    Explain how to use the Easy Quiz Maker after installation (if applicable) or how to get started.
+Explain how to use the Easy Quiz Maker after installation (if applicable) or how to get started.
     Include steps on:
         Creating a quiz by editing a spreadsheet.
         Converting the spreadsheet data to the program's format.
@@ -35,7 +35,7 @@ This project provides a convenient and efficient way to create short quizzes by 
 
 ## Features:
 
-    Provide a more detailed list of the Easy Quiz Maker's features, expanding upon those mentioned in the introduction.
+Provide a more detailed list of the Easy Quiz Maker's features, expanding upon those mentioned in the introduction.
     Include details like:
         Supported question types (e.g., multiple choice with explanations).
         Number of answer choices allowed.
@@ -44,7 +44,7 @@ This project provides a convenient and efficient way to create short quizzes by 
 
 ## Contributing (Optional):
 
-    If you welcome contributions to your project, outline how others can get involved.
+If you welcome contributions to your project, outline how others can get involved.
     Mention preferred methods for submitting improvements (e.g., pull requests) and any coding guidelines or testing procedures.
 
 ## License:
@@ -54,8 +54,7 @@ Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). T
 This program is created by me, Barry, for the need to prepare some examinations.  You can find me on Linkedin.
     
 ## Additional Information (Optional):
-
-    Include any other relevant information, such as:
+Include any other relevant information, such as:
         Links to related projects or documentation
         Demo of the quiz maker in action (if applicable)
         A roadmap for future development plans
