@@ -20,7 +20,7 @@
     <div id="quiz-container" class="quiz-container" style="display: none;">
         <div id="quiz-info">
             <p id="quiz-progress" style="display: inline-block;"></p>
-            <p id="quiz-type" style="display: inline-block;"></p>
+            <p id="quiz-type" style="display: inline-block; margin-left: 10px;"></p>
         </div>
         <h2 id="quiz-question"></h2>
         <form id="quiz-form">
@@ -69,6 +69,9 @@
             </table>
         </div>
     </div>
+    <footer style="text-align: center; position: absolute; bottom: 0; width: 100%;">
+        <p style="font-family: sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">&copy; 2024 - Quiz v1.00 - GPL</p>
+    </footer>
     <script>
         let selectedQuizzes = [];
         let currentQuizIndex = 0;
@@ -326,7 +329,7 @@
         function populateQuizTypes() {
             const quizTypeForm = document.getElementById('quiz-type-form');
             const allTypesLabel = document.createElement('label');
-            allTypesLabel.innerHTML = `<input type="checkbox" name="quiz-type" value="All" checked> <b>All</b> (use this to select or unselect all)`;
+            allTypesLabel.innerHTML = `<input type="checkbox" name="quiz-type" value="All" checked> <b>All</b> (use this to select or deselect all)`;
             quizTypeForm.appendChild(allTypesLabel);
             quizTypeForm.appendChild(document.createElement('br'));
 
