@@ -15,46 +15,67 @@ __Key Features:__
 This project provides a convenient and efficient way to create short quizzes by studnets, teachers, parents for various purposes.
 
 ## Installation
+There are many ways to download the package. If you are not familiar with gitops, you can download from the [repository](https://github.com/barrychum/quiz-maker) and choose Download.zip from the menu.  Extract the files to a folder you select.  
+!["Easy Quiz Maker Logo"](images/package-download.png)
 
-```bash
-# Installation commands here
+## Configuration
+The only file(s) you need to run the program is the index.html in the src subfolder.  You found 3 files in the src subfolder because I just want to keep the html file smaller and for easier update of the quiz questions by putting the questions in an external quizzes.js.  
+
+You just need to put the index.html, the styles.css, the quizzes.js in the same folder.  Open the index.html by a browswer and you are good to go!  
+
+To create your own quizzes.js, you can use 2 methods.  
+1. Manually create the quizzes.js.  This is suitable for a quiz with small number of questions.  
+2. Edit in a spreadsheet program and convert to quizzes.js.  This is the recommended method if you have a quiz with 10 or more questions.  
+
+#### Method 1 : create quizzes.js manually
+The quizzes.js file is a javascript file that contains 1 constant quizzes.  
+
+const quizzes = [  
+    {  
+    "choices":[<span style="color: red;">"choice 1","choice 2","choice 3","choice 4"</span>],  
+    "explanation":<span style="color: red;">"answer explanation"</span>,  
+    "question":<span style="color: red;">"the question?"</span>,  
+    "correct":[<span style="color: red;">0,1</span>],  
+    "type":<span style="color: red;">"question type"</span>  
+    },
+    <span style="color: red;">...</span>
+];  
+#### Method 2 : convert a csv to quizzes.js
+Use your favorite spreadsheet program (Excel / Goolge Sheets / LibreOffice Calc, etc) to create a worksheet with the following columns :  
+| Column name | Description |
+|---|---|
+| question | The question |
+| type | The question type.  If you don't use use this, you can simply put "General" |
+| choice1 | The first answer choice. |
+| c1 | if this is the correct answer, enter "true", otherwise, enter "false" |
+| choice2 | similar to choice1 |
+| c2 | similar to c1 |
+| choice3 | similar to choice1. Leave blank if you don't need this |
+| c3 | similar to c1. Leave blank if you don't need this |
+| choice4 | similar to choice1. Leave blank if you don't need this |
+| c4 | similar to c1. Leave blank if you don't need this |
+| choice5 | similar to choice1. Leave blank if you don't need this |
+| c5 | similar to c1. Leave blank if you don't need this |
+| explanation | Enter the explanation for the answer |
+
+The following is an example of the spreadsheet.  !["Easy Quiz Maker Logo"](images/spreadsheet.png)
+
+After you have finished the spreadsheet, save the spreadsheet in a csv file using filename "quizzes.csv".  Use the utils/generate-quiz.ps1 to convert quizzes.csv to quizzes.js.
+
 ```
+./generate-quiz.ps1 quizzes.csv quizzes.js
+```
+After you have generated the quizzes.js, just put the quizzes.js in the same directory as index.html and styles.css.  open index.html from your favorite browser.  You are good to go.  
 
-    If the Easy Quiz Maker requires any setup (e.g., downloading files, installing dependencies), provide clear instructions.
-    Mention any system requirements (e.g., web browser compatibility).
 
-## Usage:
-
-Explain how to use the Easy Quiz Maker after installation (if applicable) or how to get started.
-    Include steps on:
-        Creating a quiz by editing a spreadsheet.
-        Converting the spreadsheet data to the program's format.
-        Launching the quiz in a web browser.
-        Taking the quiz and interacting with features like review, retry, and results.
-    Consider using screenshots or a short animated GIF to visually illustrate the process.
-
-## Features:
-
-Provide a more detailed list of the Easy Quiz Maker's features, expanding upon those mentioned in the introduction.
-    Include details like:
-        Supported question types (e.g., multiple choice with explanations).
-        Number of answer choices allowed.
-        Spreadsheet editing format specifications.
-        Functionality of review, retry, and result summary.
-
-## Contributing (Optional):
-
-If you welcome contributions to your project, outline how others can get involved.
-    Mention preferred methods for submitting improvements (e.g., pull requests) and any coding guidelines or testing procedures.
+## Usage and Features:
+The interface should be quite intuitive.  I will create some usage guidelines when I have time.
 
 ## License:
 Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE)
 
 ## Author:
-This program is created by me, Barry, for the need to prepare some examinations.  You can find me on Linkedin.
+This program is created by me, Barry, for the personal need to prepare for examinations.  You can find me on Linkedin.
     
-## Additional Information (Optional):
-Include any other relevant information, such as:
-        Links to related projects or documentation
-        Demo of the quiz maker in action (if applicable)
-        A roadmap for future development plans
+## Further Development
+This is a very small personal project.  The current version should have sufficient features and functions for my personal needs.  In case you find this project useful, and you would like some features to be added, please feel free to contact me. You can find my profile in Linkedln.
