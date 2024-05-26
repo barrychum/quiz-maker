@@ -233,7 +233,7 @@
 
         function downloadResults() {
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Question,Type,Your Answer,Correct Answer,Correctness,Review\n";
+            csvContent += "\"Question\",\"Type\",\"Your Answer\",\"Correct Answer\",\"Correctness\",\"Review\"\n";
             quizResults.forEach(result => {
                 let row = Object.values(result).map(value => `"${value}"`).join(",");
                 csvContent += row + "\n";
