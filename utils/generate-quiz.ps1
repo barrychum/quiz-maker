@@ -55,4 +55,4 @@ $quizzesJsContent = $quizzesJsContent.TrimEnd(',') + "];"
 # Write the content to the quizzes.js file
 Set-Content -Path $outputFilePath -Value $quizzesJsContent
 
-Write-Output "quizzes.js file has been generated successfully."
+Write-Output "$out file has been generated successfully."
