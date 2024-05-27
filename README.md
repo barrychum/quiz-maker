@@ -95,7 +95,9 @@ The interface should be quite intuitive.
     * Retry Review : The program will let you retry the questions that you have marked for review.  This option only appears if you have marked any questions for review.
  
 !["Easy Quiz Maker Logo"](images/Step04.png)
-
+#### Step 5 : Resume quiz
+* If you have closed your browser for any reasons during a quiz, you will see a <b>Resume Last Quiz</b> button.  Click the button to resume from where you left off.
+!["Easy Quiz Maker Logo"](images/Step05.png)
 ## License:
 Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE)
 
