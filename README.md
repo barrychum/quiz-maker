@@ -1,5 +1,5 @@
 # Easy Quiz Maker ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/barrychum/quiz-maker.svg) 
-This is a user-friendly web application that allows you to create short quizzes in a single HTML file.([Click here for demo](https://barry-the-nerd.github.io/lituk target="_blank")) It's perfect for:   
+This is a user-friendly web application that allows you to create short quizzes in a single HTML file. (<a href="https://barry-the-nerd.github.io/lituk" target="_blank">Click here for demo</a>) It's perfect for:   
 
 * __Preparing for exams:__ Quickly set up quizzes to test your knowledge on any subject.
 * __Sharing knowledge:__ Create quizzes and share them with friends or colleagues to test their understanding.
