@@ -65,11 +65,37 @@ After you have finished the spreadsheet, save the spreadsheet in a csv file usin
 ```
 ./generate-quiz.ps1 quizzes.csv quizzes.js
 ```
-After you have generated the quizzes.js, just put the quizzes.js in the same directory as index.html and styles.css.  open index.html from your favorite browser.  You are good to go.  
-
+After you have generated the quizzes.js, just put the quizzes.js in the same directory as index.html and styles.css.  Open index.html from your favorite browser.  You are good to go.  
+#### Method 3 : convert a csv to quizzes.js web tool
+This is very similar to method 2.  I've created a html which you can run using a browser.  Just open the convert-quiz.html in the utils folder of this package using browser.  Import the csv file and save the converted quizzes.js.  Save the quizzes.js in the same directory as index.html and styles.css.
 
 ## Usage and Features:
-The interface should be quite intuitive.  I will create some usage guidelines when I have time.
+The interface should be quite intuitive.  
+#### Step 1 : Select questions
+* Enter the number of questions you want to take.  
+* Select the type of questions.
+* Click <b>Start</b> button.
+!["Easy Quiz Maker Logo"](images/Step01.png)
+
+#### Step 2 : Answer questions
+* Select the checkbox(es) of your answer
+* Click <b>Submit</b> to submit your answer
+!["Easy Quiz Maker Logo"](images/Step02.png)
+
+#### Step 3 : View answers
+* Select <b>Mark for review</b> if you want to review the question at the end of the quiz.
+* Click <b>Next</b> for the next question.
+!["Easy Quiz Maker Logo"](images/Step03.png)
+
+#### Step 4 : Review quiz results
+* When you finish the quiz, a summary and result will be shown.  You can download the result in csv format.
+* Choose one of the options
+    * Select Other questions : The program will restart and let you choose other questions.
+    * Retry Same questions : The program will restart with the same set of questions in the quiz.
+    * Retry Incorrect : The program will let you retry the questions that you did not answer correctly.  This option only appears if you have answered any questions incorrectly.
+    * Retry Review : The program will let you retry the questions that you have marked for review.  This option only appears if you have marked any questions for review.
+ 
+!["Easy Quiz Maker Logo"](images/Step04.png)
 
 ## License:
 Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE)
