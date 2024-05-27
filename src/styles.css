@@ -80,6 +80,9 @@ h2::clone-rule(#select-question-type) {
     #quiz-question, #select-number-of-question, #select-question-type {
         font-size: 1em;
     }
+    #quiz-info{
+        font-size: 0.6em;
+    }
     th, td {
         padding: 4px;
     }
@@ -101,6 +104,9 @@ h2::clone-rule(#select-question-type) {
     #quiz-question, #select-number-of-question, #select-question-type {
         font-size: 1.2em;
     }
+    #quiz-info{
+        font-size: 0.8em;
+    }
     th, td {
         padding: 6px;
     }
@@ -121,6 +127,9 @@ h2::clone-rule(#select-question-type) {
     }
     #quiz-question, #select-number-of-question, #select-question-type {
         font-size: 1.2em;
+    }
+    #quiz-info{
+        font-size: 0.8em;
     }
     th, td {
         padding: 8px;
