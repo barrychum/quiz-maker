@@ -75,9 +75,7 @@ The interface should be quite intuitive.
 * Enter the number of questions you want to take.  
 * Select the type of questions.
 * Click <b>Start</b> button.
-<div style="width: 200px; height: 150px;">
 !["Easy Quiz Maker Logo"](images/Step01.png)
-</div>
 
 #### Step 2 : Answer questions
 * Select the checkbox(es) of your answer
