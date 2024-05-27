@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz App</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" no-cache>
+    <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="styles.css">
+    <!-- 
+        Version: 1.0.1
+        Date: 2024-05-27
+    -->
 </head>
 <body>
     <div id="quiz-selection">
@@ -16,6 +20,8 @@
         <button onclick="startQuiz()">Start</button>
         <h2 id="select-question-type">Select Question Types</h2>
         <form id="quiz-type-form"></form>
+        <br><br>
+        <button id="resume-button" onclick="resumeQuiz()" style="display: none;">Resume Last Quiz</button>
     </div>
     <div id="quiz-container" class="quiz-container" style="display: none;">
         <div id="quiz-info">
@@ -90,6 +96,7 @@
         }
 
         function startQuiz() {
+            localStorage.removeItem('quizProgress');
             const numQuizzes = parseInt(document.getElementById('num-quizzes').value);
             const selectedTypes = Array.from(document.querySelectorAll('input[name="quiz-type"]:checked')).map(input => input.value);
             let filteredQuizzes = quizzes;
@@ -99,6 +106,20 @@
             }
 
             selectedQuizzes = shuffleArray(filteredQuizzes).slice(0, numQuizzes);
+            document.getElementById('quiz-selection').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuiz();
+        }
+
+        function resumeQuiz() {
+            const quizProgress = JSON.parse(localStorage.getItem('quizProgress'));
+            selectedQuizzes = quizProgress.selectedQuizzes;
+            currentQuizIndex = quizProgress.currentQuizIndex;
+            correctCount = quizProgress.correctCount;
+            quizResults = quizProgress.quizResults;
+            incorrectQuizzes = quizProgress.incorrectQuizzes;
+            reviewQuizzes = quizProgress.reviewQuizzes;
+
             document.getElementById('quiz-selection').style.display = 'none';
             document.getElementById('quiz-container').style.display = 'block';
             loadQuiz();
@@ -125,9 +146,13 @@
         }
 
         function submitQuiz() {
-            document.getElementById('submit-button').style.display = 'none'; // Hide the submit button after user clicks it
             const quiz = selectedQuizzes[currentQuizIndex];
             const selectedChoices = Array.from(document.querySelectorAll('input[name="choices"]:checked')).map(input => parseInt(input.value));
+            if (selectedChoices.length !== quiz.correct.length) {
+                document.getElementById('quiz-feedback').innerHTML = `<span class="wrongans">Please select ${quiz.correct.length} choices.</span>`;
+                return;
+            }
+            document.getElementById('submit-button').style.display = 'none'; // Hide the submit button after user clicks it
             const isCorrect = selectedChoices.length === quiz.correct.length && selectedChoices.every(value => quiz.correct.includes(value));
             const feedback = document.getElementById('quiz-feedback');
             feedback.innerHTML = isCorrect ? '<span class="answer">Correct!</span>' : '<span class="wrongans">Wrong!</span> Correct answers: ' + quiz.correct.map(index => quiz.choices[index]).join(', ');
@@ -178,10 +203,27 @@
                 document.getElementById('next-button').style.display = 'none';
                 document.getElementById('submit-button').style.display = 'inline-block'; // Show the submit button again
                 loadQuiz();
+                // Save progress to local storage
+                saveProgressToLocalStorage();
             } else {
+                localStorage.removeItem('quizProgress');
                 showSummary();
                 showResults();
             }
+
+
+        }
+
+        function saveProgressToLocalStorage() {
+            const quizProgress = {
+                selectedQuizzes,
+                currentQuizIndex,
+                correctCount,
+                quizResults,
+                incorrectQuizzes,
+                reviewQuizzes
+            };
+            localStorage.setItem('quizProgress', JSON.stringify(quizProgress));
         }
 
         function showSummary() {
@@ -208,6 +250,8 @@
             } else {
                 document.getElementById('retry-review').style.display = 'none';
             }
+            // Clear progress from local storage
+            localStorage.removeItem('quizProgress');
         }
 
         function showResults() {
@@ -315,6 +359,7 @@
             document.getElementById('quiz-results').style.display = 'none';
             document.getElementById('quiz-container').style.display = 'none'; // Hide quiz container
             document.getElementById('quiz-selection').style.display = 'block'; // Show quiz selection
+            localStorage.removeItem('quizProgress'); // Clear local storage
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -323,6 +368,11 @@
             const script = document.createElement('script');
             script.src = `quizzes.js?nocache=${new Date().getTime()}`;
             document.body.appendChild(script);
+
+            // Check if there is a saved quiz progress in local storage
+            if (localStorage.getItem('quizProgress')) {
+                document.getElementById('resume-button').style.display = 'block';
+            }
         });
 
         // Function to dynamically populate quiz types and set max quizzes
