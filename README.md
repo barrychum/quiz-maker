@@ -1,5 +1,5 @@
 # Easy Quiz Maker ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/barrychum/quiz-maker.svg) 
-
+...
 This is a user-friendly web application that allows you to create short quizzes in a single HTML file. It's perfect for:   
 
 * __Preparing for exams:__ Quickly set up quizzes to test your knowledge on any subject.
