@@ -109,7 +109,7 @@
                 animate: true,
                 props: ['circle', 'square', 'triangle', 'line'],
                 colors: [[165,104,246],[230,61,135],[0,199,228],[253,214,126]],
-                clock: 25,
+                clock: 35,
                 rotate: true,
                 width: window.innerWidth,
                 height: window.innerHeight,
@@ -125,7 +125,7 @@
             setTimeout(() => {
                 confetti.clear();
                 confettiCanvas.style.display = 'none';
-            }, 10000);
+            }, 15000);
         }
 
         function shuffleArray(array) {
@@ -251,7 +251,6 @@
                 localStorage.removeItem('quizProgress');
                 showSummary();
                 showResults();
-                startConfetti();
             }
 
 
@@ -275,6 +274,7 @@
             let summaryMessage = '';
             if (percentageCorrect >= 100) {
                 summaryMessage = '<span id="perfect-score">Congratulations!</span> You got a perfect score.';
+                startConfetti();
             } else {
                 summaryMessage = 'I see some areas for improvement, but you\'re on the right track!';
             }
