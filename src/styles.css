@@ -147,5 +147,20 @@ h2::clone-rule(#select-question-type) {
 
 #quiz-choices input[type="checkbox"] {
     margin-bottom: 0.8em; /* Adjust the value for desired spacing */
-  }
-  
+}
+
+#perfect-score {
+    animation: score-blinker 2s linear infinite;
+    color: red;
+}
+
+
+@keyframes score-blinker {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
