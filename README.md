@@ -1,11 +1,11 @@
-# Easy Quiz Maker ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg) ![GitHub last commit](https://img.shields.io/github/last-commit/barrychum/quiz-maker.svg) 
+# Easy Quiz Maker ![GitHub License](https://img.shields.io/github/license/barrychum/quiz-maker) ![GitHub last commit](https://img.shields.io/github/last-commit/barrychum/quiz-maker.svg) 
 This is a user-friendly web application that allows you to create short quizzes in a single HTML file. (<a href="https://barry-the-nerd.github.io/lituk" style="text-decoration: none" target="_blank">Click here for demo</a>) It's perfect for:   
 
 * __Preparing for exams:__ Quickly set up quizzes to test your knowledge on any subject.
 * __Sharing knowledge:__ Create quizzes and share them with friends or colleagues to test their understanding.
   
 __Key Features:__  
-* __Simple and Portable:__ The entire quiz is contained within a single HTML file, making it easy to copy, share, and use anywhere.
+* __Simple and Portable:__ Only 3 files are needed.  No server side dependency needed, making it easy to copy, share, and use anywhere.
 * __Flexible Question Types:__ Create multiple-choice questions with 2 to 5 answer options, explanations, and different question types to suit your needs.
 * __Spreadsheet-based Editing:__ Edit your questions conveniently in a spreadsheet application (like Excel or Google Sheets) and then convert them to the format used by the program.
 * __Review and Retry:__ Mark questions for review and allow users to retry incorrectly answered questions to improve their learning.
@@ -18,11 +18,9 @@ There are many ways to download the package. If you are not familiar with gitops
 !["Easy Quiz Maker Logo"](images/package-download.png)
 
 ## Configuration
-The only file(s) you need to run the program is the index.html in the src subfolder.  You found 3 files in the src subfolder because I just want to keep the html file smaller and for easier update of the quiz questions by putting the questions in an external quizzes.js.  
+You need only the 3 files to in the src folder run the program.  You just need to put the index.html, the styles.css, and the quizzes.js in the same folder.  Open the index.html by a browswer and you are good to go!  
 
-You just need to put the index.html, the styles.css, the quizzes.js in the same folder.  Open the index.html by a browswer and you are good to go!  
-
-To create your own quizzes.js, you can use 2 methods.  
+The quizzes.js contains the all your questions and answers.  Due to security reasons (Same-origin policy / Cross-Origin Resource Sharing), only certain external file types can be read directly by javascript and js is one of them.  To create your quizzes.js, you can use 2 methods.  
 1. Manually create the quizzes.js.  This is suitable for a quiz with small number of questions.  
 2. Edit in a spreadsheet program and convert to quizzes.js.  This is the recommended method if you have a quiz with 10 or more questions.  
 
@@ -98,11 +96,7 @@ The interface should be quite intuitive.
 #### Step 5 : Resume quiz
 * If you have closed your browser for any reasons during a quiz, you will see a <b>Resume Last Quiz</b> button.  Click the button to resume from where you left off.
 !["Easy Quiz Maker Logo"](images/Step05.png)
-## License:
-Easy Quiz Maker is licensed under the GNU General Public License v3.0 (GPLv3). This license grants you the freedom to use, modify, and distribute the code for any purpose. You can find the full license text in the [GNU General Public License v3.0](LICENSE)
 
-## Author:
-This program is created by me, Barry, for the personal need to prepare for examinations.  You can find me on Linkedin.
-    
+
 ## Further Development
 This is a very small personal project.  The current version should have sufficient features and functions for my personal needs.  In case you find this project useful, and you would like some features to be added, please feel free to contact me. You can find my profile in Linkedln.
