@@ -1,7 +1,7 @@
 # Easy Quiz Maker 
 ![GitHub License](https://img.shields.io/github/license/barrychum/quiz-maker) ![GitHub last commit](https://img.shields.io/github/last-commit/barrychum/quiz-maker.svg)
 
-Easy Quiz Maker is a user-friendly web application that allows you to create and take short quizzes in a single HTML file. [Try the demo](https://barry-the-nerd.github.io/lituk)
+Easy Quiz Maker is a user-friendly web application that allows you to create and take short quizzes in a single HTML file. [Try the demo](https://nerd-vana.github.io/lituk/)
 
 ## Features
 
