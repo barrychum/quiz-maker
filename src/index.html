@@ -10,11 +10,16 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="confetti.css">
     <script>
-        const version = 'v1.1.0';
+        const version = 'v1.2.0';
     </script>
 </head>
 <body>
-    <div id="quiz-selection">
+    <div id="loading" style="text-align: center; padding: 50px;">
+        <h2>Loading Quiz Data...</h2>
+        <div id="loading-status">Reading quizzes.csv...</div>
+    </div>
+
+    <div id="quiz-selection" style="display: none;">
         <h2 id="select-number-of-question">Select Number of Questions</h2>
         <input type="number" id="num-quizzes" min="1" value="1">
         <button onclick="startQuiz()">Start</button>
@@ -85,7 +90,6 @@
    <!-- Include the confetti-js library -->
    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
 
-
     <script>
         let selectedQuizzes = [];
         let currentQuizIndex = 0;
@@ -93,6 +97,7 @@
         let quizResults = [];
         let incorrectQuizzes = [];
         let reviewQuizzes = [];
+        let quizzes = []; // Will be populated from CSV
 
         document.getElementById('version').textContent = version;
         
@@ -252,8 +257,6 @@
                 showSummary();
                 showResults();
             }
-
-
         }
 
         function saveProgressToLocalStorage() {
@@ -405,22 +408,132 @@
             localStorage.removeItem('quizProgress'); // Clear local storage
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('quiz-selection').style.display = 'block';
-            // Prevent caching by appending a random query string to the script src
-            const script = document.createElement('script');
-            script.src = `quizzes.js?nocache=${new Date().getTime()}`;
-            document.body.appendChild(script);
+        // CSV parsing functions - exact same logic as convert-quiz.html
+        function parseCsvRow(row, quotesEnclosed = true) {
+            const result = [];
+            let current = '';
+            let insideQuotes = false;
 
-            // Check if there is a saved quiz progress in local storage
-            if (localStorage.getItem('quizProgress')) {
-                document.getElementById('resume-button').style.display = 'block';
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+
+                if (quotesEnclosed && char === '"') {
+                    if (insideQuotes && row[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        insideQuotes = !insideQuotes;
+                    }
+                } else if (char === ',' && !insideQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
             }
-        });
+
+            result.push(current.trim());
+            return result;
+        }
+
+        function csvToQuizzes(csvContent, quotesEnclosed = true) {
+            const rows = csvContent.trim().split('\n');
+            const headers = parseCsvRow(rows[0], quotesEnclosed).map(header => header.trim().toLowerCase());
+            const data = rows.slice(1);
+
+            const quizzesArray = [];
+
+            data.forEach(row => {
+                const columns = parseCsvRow(row, quotesEnclosed);
+                if (columns.length < headers.length) return;
+
+                const question = columns[headers.indexOf('question')];
+                const type = columns[headers.indexOf('type')];
+                const explanation = columns[headers.indexOf('explanation')];
+                const choices = [];
+                const correct = [];
+
+                for (let i = 1; i <= 5; i++) {
+                    const choiceIndex = headers.indexOf(`choice${i}`);
+                    const correctIndex = headers.indexOf(`c${i}`);
+                    if (choiceIndex !== -1 && correctIndex !== -1) {
+                        const choice = columns[choiceIndex];
+                        if (choice && choice.trim() !== '') {
+                            choices.push(choice.trim());
+                            if (columns[correctIndex].toLowerCase().trim() === 'true') {
+                                correct.push(choices.length - 1);
+                            }
+                        }
+                    }
+                }
+
+                if (question && type && choices.length > 0 && correct.length > 0) {
+                    quizzesArray.push({
+                        question: question.trim(),
+                        type: type.trim(),
+                        choices,
+                        correct,
+                        explanation: explanation ? explanation.trim() : ''
+                    });
+                }
+            });
+
+            return quizzesArray;
+        }
+
+        // Load CSV file
+        async function loadQuizzes() {
+            try {
+                document.getElementById('loading-status').textContent = 'Fetching quizzes.csv...';
+                const response = await fetch('quizzes.csv?nocache=' + new Date().getTime());
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                document.getElementById('loading-status').textContent = 'Parsing CSV data...';
+                const csvContent = await response.text();
+                
+                // Auto-detect if values are quoted by checking first data row
+                const lines = csvContent.trim().split('\n');
+                const quotesEnclosed = lines.length > 1 && lines[1].includes('"');
+                
+                quizzes = csvToQuizzes(csvContent, quotesEnclosed);
+                
+                if (quizzes.length === 0) {
+                    throw new Error('No valid quizzes found in CSV file');
+                }
+                
+                document.getElementById('loading-status').textContent = `Loaded ${quizzes.length} quizzes successfully!`;
+                
+                // Hide loading and show quiz selection
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('quiz-selection').style.display = 'block';
+                    populateQuizTypes();
+                    
+                    // Check if there is a saved quiz progress in local storage
+                    if (localStorage.getItem('quizProgress')) {
+                        document.getElementById('resume-button').style.display = 'block';
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error loading quizzes:', error);
+                document.getElementById('loading-status').innerHTML = 
+                    `<span style="color: red;">Error loading quizzes.csv: ${error.message}</span><br><br>
+                     <strong>Troubleshooting:</strong><br>
+                     1. Make sure quizzes.csv exists in the same directory<br>
+                     2. Serve this page through a web server (not file://)<br>
+                     3. Check the browser console for more details`;
+            }
+        }
 
         // Function to dynamically populate quiz types and set max quizzes
         function populateQuizTypes() {
             const quizTypeForm = document.getElementById('quiz-type-form');
+            quizTypeForm.innerHTML = ''; // Clear existing content
+            
             const allTypesLabel = document.createElement('label');
             allTypesLabel.innerHTML = `<input type="checkbox" name="quiz-type" value="All" checked> <b>All</b> (use this to select or deselect all)`;
             quizTypeForm.appendChild(allTypesLabel);
@@ -459,12 +572,9 @@
             });
         }
 
-        // Ensure quizzes.js is loaded before populating quiz types and setting max quizzes
+        // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
-            const script = document.createElement('script');
-            script.src = 'quizzes.js';
-            script.onload = populateQuizTypes; // Populate quiz types once the script is loaded
-            document.body.appendChild(script);
+            loadQuizzes();
         });
     </script>
 </body>
